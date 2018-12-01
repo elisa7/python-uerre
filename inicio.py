@@ -103,7 +103,59 @@ class MaterialRequerido(object):
         self.materila = material
         self.cantidad = cantidad
 
+        
+# Se  crea la clase Direccion
+class Direccion(object):
+    def __init__(self, pCalle, pNumero, pColonia, pEntrecalles):
+        self.calle = pCalle
+        self.numero = pNumero
+        self.colonia = pColonia
+        self.entrecalles = pEntrecalles
 
+
+# Se  crea la clase Usuario
+class Usuario(object):
+    def __init__(self, pId, pNombre, pRol):
+        self.Id = pId
+        self.nombre = pNombre
+        self.rol = pRol
+
+    def getId(self):
+        return self.Id
+
+    def getNombre(self):
+        return self.nombre
+
+    def getRol(self):
+        return self.rol
+
+
+# Se  crea la clase Ciudadano
+class Ciudadano(Usuario):
+    def __init__(self, pId, pNombre, pDireccion, pTelefono):
+        Usuario.__init__(self, pId, pNombre, "Ciudadano")
+        self.Direccion = pDireccion
+        self.Telefono = pTelefono
+
+    def getDireccion(self):
+        return self.Direccion
+
+    def GetTelefono(self):
+        return self.Telefono
+
+
+# Se  crea la clase Inspector
+class Inspector(Usuario):
+    def __init__(self, pId, pNombre):
+        Usuario.__init__(self, pId, pNombre, "Inspector")
+
+
+# Se  crea la clase Administrador
+class Administrador(Usuario):
+    def __init__(self, pId, pNombre):
+        Usuario.__init__(self, pId, pNombre, "Administrador")
+
+        
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
