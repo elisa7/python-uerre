@@ -188,6 +188,7 @@ def registrar_dano(id_reporte):
     desperfectos = 'desperfectos'
     estatus = 'En Revision'
     reporte_dano = ReporteDano(ciudadano, desperfectos, reporte, vehiculo, estatus)
+    reportes_danos = [reporte_dano.id]  = reporte_dano
     print("Su registro ha sido guardado, el folio es: ", reporte_dano.id)
 
 
