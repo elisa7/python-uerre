@@ -5,28 +5,19 @@ from datetime import datetime
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
 
 reportes = {}
-
-
-def buscar_reporte(id_reporte):
-    if id in reportes:
-        return reportes[id_reporte]
-    else:
-        return None
-
+reportes_danos = {}
 
 class Reporte(object):
 
     def __init__(self):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.fecha = datetime.now()
-
 
 class ReporteBache(Reporte):
 
-    def __init__(self, bache, reporte, estatus, prioridad, orden_trabajo):
-        super(Reporte, self).__init__()
+    def __init__(self, bache, estatus, prioridad, orden_trabajo=None):
+        super().__init__()
         self.bache = bache
-        self.reporte = reporte
         self.estatus = estatus
         self.prioridad = prioridad
         self.orden_trabajo = orden_trabajo
@@ -36,7 +27,7 @@ class ReporteBache(Reporte):
 class ReporteDano(Reporte):
 
     def __init__(self, ciudadano, desperfectos, reporte_bache, vehiculo, estatus):
-        super(Reporte, self).__init__()
+        super().__init__()
         self.ciudadano = ciudadano
         self.desperfectos = desperfectos
         self.reporte = reporte_bache
@@ -47,7 +38,7 @@ class ReporteDano(Reporte):
 class Vehiculo(object):
 
     def __init__(self, placas, descripcion):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.placas = placas
         self.descripcion = descripcion
 
@@ -156,6 +147,42 @@ class Administrador(Usuario):
         Usuario.__init__(self, pId, pNombre, "Administrador")
 
         
+def registrar_reporte():
+    print("Favor de ingresar los datos necesarios para el registro:\n")
+    tipo = input("Tipo de Bache: ")
+    print("Direccion\n")
+    pCalle = input("Calle: ")
+    pNumero = input("Numero:")
+    pColonia = input("Colonia: ")
+    pEntrecalles = input("Entre calles:")
+    tamano = input("Tamano: ")
+    posicion = input("Posicion: ")
+
+    direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
+    bache = Bache(tipo, direccion, tamano, posicion)
+    estatus = 'Pendiente'
+    prioridad = 1
+    reporte = ReporteBache(bache, estatus, prioridad)
+    reportes[reporte.id] = reporte
+
+def registrar_dano(id_reporte):
+    pass 
+
+
+def accesar():
+    usuario = {'admin': 'admin'}
+    print("acceso")
+
+
+def buscar_reporte(id_reporte):
+    if id_reporte in reportes:
+        return reportes[id_reporte]
+    else:
+        return None
+
+
+menu = {'1': registrar_reporte, '2': registrar_dano, '3': accesar}
+
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
@@ -171,9 +198,10 @@ if __name__ == '__main__':
 
         Favor de elequir una opcion del menu?: """)
         print("=" * 80)
-        if int(option) not in [1, 2, 3]:
+        if option not in ['1', '2', '3']:
             print("Opcion invalida")
-
+        else:
+            menu[option]()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
         while answer not in ['s', 'n']:
             answer = input("Desea registrar otro reporte? S/N: ").lower()
