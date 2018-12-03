@@ -146,27 +146,51 @@ class Administrador(Usuario):
     def __init__(self, pId, pNombre):
         Usuario.__init__(self, pId, pNombre, "Administrador")
 
-        
-def registrar_reporte():
+
+def registrar_bache():
     print("Favor de ingresar los datos necesarios para el registro:\n")
-    tipo = input("Tipo de Bache: ")
+    tipo = input("Tipo de Bache [hoyo/zanja/depresion/irregularidad]: ")
     print("Direccion\n")
     pCalle = input("Calle: ")
-    pNumero = input("Numero:")
+    pNumero = 0
     pColonia = input("Colonia: ")
     pEntrecalles = input("Entre calles:")
-    tamano = input("Tamano: ")
-    posicion = input("Posicion: ")
-
+    tamano = input("Tamano [1 al 10]: ")
+    posicion = input("Posicion [izquierda/centro/derecha: ")
     direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
     bache = Bache(tipo, direccion, tamano, posicion)
     estatus = 'Pendiente'
     prioridad = 1
     reporte = ReporteBache(bache, estatus, prioridad)
     reportes[reporte.id] = reporte
+    print("Gracias Por registrar su reporte, su numero de registro es:", reporte.id)
+    print("Favor de guardarlo para segumientos posteriores")
 
 def registrar_dano(id_reporte):
-    pass 
+    reporte = buscar_reporte(id_reporte)
+    if not reporte:
+        print("Reporte no encontrado")
+        print("Para continuar primero registre el Bache")
+        registrar_bache()
+    pId = uuid.uuid4().int
+    pNombre = input("Nombre Ciudadano: ")
+    print("Direccion Ciudadano\n")
+    pCalle = input("Calle: ")
+    pNumero = input("Numero: ")
+    pColonia = input("Colonia: ")
+    pEntrecalles = input("Entre calles:")
+    direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
+    pTelefono = input("Telefono de contacto: ")
+    ciudadano = Ciudadano(pId, pNombre, direccion, pTelefono)
+    placas = input("Placas del vehiculo: ")
+    descripcion = input("Descripcion del Vehiculo; color, modelo, marca :")
+    vehiculo = Vehiculo(placas, descripcion)
+    desperfectos = 'desperfectos'
+    estatus = 'En Revision'
+    reporte_dano = ReporteDano(ciudadano, desperfectos, reporte, vehiculo, estatus)
+    print("Su registro ha sido guardado, el folio es: ", reporte_dano.id)
+
+
 
 
 def accesar():
@@ -181,7 +205,6 @@ def buscar_reporte(id_reporte):
         return None
 
 
-menu = {'1': registrar_reporte, '2': registrar_dano, '3': accesar}
 
 # inicio de programa
 if __name__ == '__main__':
@@ -201,7 +224,13 @@ if __name__ == '__main__':
         if option not in ['1', '2', '3']:
             print("Opcion invalida")
         else:
-            menu[option]()
+            if option == '1':
+                registrar_bache()
+            if option == '2':
+                id_reporte = input("Favor de ingresar Folio de bache:")
+                registrar_dano(id_reporte)
+            if option == '3':
+                accesar()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
         while answer not in ['s', 'n']:
             answer = input("Desea registrar otro reporte? S/N: ").lower()
