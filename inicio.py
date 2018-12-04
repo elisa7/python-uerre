@@ -7,11 +7,13 @@ from datetime import datetime
 reportes = {}
 reportes_danos = {}
 
+
 class Reporte(object):
 
     def __init__(self):
         self.id = uuid.uuid4().int
         self.fecha = datetime.now()
+
 
 class ReporteBache(Reporte):
 
@@ -21,7 +23,6 @@ class ReporteBache(Reporte):
         self.estatus = estatus
         self.prioridad = prioridad
         self.orden_trabajo = orden_trabajo
-
 
 
 class ReporteDano(Reporte):
@@ -57,7 +58,7 @@ class Revision(object):
 
     def __init__(self, resultado, materiales, equipos, inspector):
         self.id = uuid.uuid4()
-        self.resultado  = resultado
+        self.resultado = resultado
         self.materiales = materiales
         self.equipos = equipos
         self.inspector = inspector
@@ -80,12 +81,14 @@ class Equipo(object):
         self.tipo = tipo
         self.descipcion = descripcion
 
+
 class Material(object):
 
     def __init__(self, tipo, descripcion):
         self.id = uuid.uuid4()
         self.tipo = tipo
         self.descipcion = descripcion
+
 
 class MaterialRequerido(object):
 
@@ -94,7 +97,7 @@ class MaterialRequerido(object):
         self.materila = material
         self.cantidad = cantidad
 
-        
+
 # Se  crea la clase Direccion
 class Direccion(object):
     def __init__(self, pCalle, pNumero, pColonia, pEntrecalles):
@@ -166,8 +169,9 @@ def registrar_bache():
     print("Gracias Por registrar su reporte, su numero de registro es:", reporte.id)
     print("Favor de guardarlo para segumientos posteriores")
 
-def registrar_dano(id_reporte):
-    reporte = buscar_reporte(id_reporte)
+
+def registrar_dano():
+    reporte = buscar_reporte()
     if not reporte:
         print("Reporte no encontrado")
         print("Para continuar primero registre el Bache")
@@ -188,12 +192,13 @@ def registrar_dano(id_reporte):
     desperfectos = 'desperfectos'
     estatus = 'En Revision'
     reporte_dano = ReporteDano(ciudadano, desperfectos, reporte, vehiculo, estatus)
-    reportes_danos = [reporte_dano.id]  = reporte_dano
+    reportes_danos[reporte_dano.id] = reporte_dano
     print("Su registro ha sido guardado, el folio es: ", reporte_dano.id)
+
 
 def accesar():
     usuario = {'admin': 'admin'}
-    menuAdmin = {'1': buscar_reporte, '2': buscar_dano,}
+    menuAdmin = {'1': buscar_reporte, '2': buscar_dano, }
     answer = 's'
     print("=" * 80)
     print("Sistema de Administración de Reportes de desperfectos viales")
@@ -215,6 +220,7 @@ def accesar():
         if answer == 'n':
             break
 
+
 def buscar_dano():
     id_dano = input("Introduzca el ID del daño: ")
     if id_dano in reportes_danos:
@@ -222,12 +228,14 @@ def buscar_dano():
     else:
         return None
 
+
 def buscar_reporte():
     id_reporte = input("Introduzca el ID del reporte: ")
     if id_reporte in reportes:
         return reportes[id_reporte]
     else:
         return None
+
 
 # inicio de programa
 if __name__ == '__main__':
@@ -250,8 +258,7 @@ if __name__ == '__main__':
             if option == '1':
                 registrar_bache()
             if option == '2':
-                id_reporte = input("Favor de ingresar Folio de bache:")
-                registrar_dano(id_reporte)
+                registrar_dano()
             if option == '3':
                 accesar()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
