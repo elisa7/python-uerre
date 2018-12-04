@@ -191,21 +191,43 @@ def registrar_dano(id_reporte):
     reportes_danos = [reporte_dano.id]  = reporte_dano
     print("Su registro ha sido guardado, el folio es: ", reporte_dano.id)
 
-
-
-
 def accesar():
     usuario = {'admin': 'admin'}
-    print("acceso")
+    menuAdmin = {'1': buscar_reporte, '2': buscar_dano,}
+    answer = 's'
+    print("=" * 80)
+    print("Sistema de Administración de Reportes de desperfectos viales")
+    print("\t\tAlcaldia de Monterrey")
+    print("=" * 80)
+    while answer == 's':
+        option = input("""
+            1) Reportes de Baches
+            2) Reportes de daños a vehiculos
+            Favor de elequir una opcion del menu?: """)
+        print("=" * 80)
+        if option not in ['1', '2']:
+            print("Opcion invalida")
+        else:
+            menuAdmin[option]()
+        answer = input("Desea registrar otro reporte? S/N: ").lower()
+        while answer not in ['s', 'n']:
+            answer = input("Desea registrar otro reporte? S/N: ").lower()
+        if answer == 'n':
+            break
 
+def buscar_dano():
+    id_dano = input("Introduzca el ID del daño: ")
+    if id_dano in reportes_danos:
+        return reportes[id_dano]
+    else:
+        return None
 
-def buscar_reporte(id_reporte):
+def buscar_reporte():
+    id_reporte = input("Introduzca el ID del reporte: ")
     if id_reporte in reportes:
         return reportes[id_reporte]
     else:
         return None
-
-
 
 # inicio de programa
 if __name__ == '__main__':
