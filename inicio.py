@@ -1,7 +1,7 @@
 # - * - unicode: utf8 -*-
 import uuid
 from datetime import datetime
-
+import getpass
 
 class Trabajador(object):
     def __init__(self, idtrabajador, nombre):
@@ -19,7 +19,7 @@ trabajadores["1"] = Trabajador(uuid.uuid4(), "Juan")
 trabajadores["2"] = Trabajador(uuid.uuid4(), "Jose")
 trabajadores["3"] = Trabajador(uuid.uuid4(), "Maria")
 trabajadores["4"] = Trabajador(uuid.uuid4(), "Pedro")
-
+user = None
 
 class Reporte(object):
 
@@ -241,21 +241,141 @@ def accesar():
 
 
 def buscar_dano():
-    id_dano = input("Introduzca el ID del daño: ")
-    if id_dano in reportes_danos:
-        return reportes[id_dano]
+    id_dano =int( input("Introduzca el ID del daño: ") )
+    if id_dano in reportes_danos.keys():
+        return reportes_danos[id_dano]
     else:
         return None
+def ver_danio():
+    print("Pediente")
 
+def ver_danios():
+    print("Pediente")
 
 def buscar_reporte():
-    id_reporte = input("Introduzca el ID del reporte: ")
-    if id_reporte in reportes:
+    id_reporte = int(input("Introduzca el ID del reporte: "))
+    if id_reporte in reportes.keys():
         return reportes[id_reporte]
     else:
         return None
+def ver_reporte():
+    reporte=buscar_reporte()
+    imprimirReporte(reporte)
+    return reporte
 
-    
+def ver_reportes():
+    for id, reporte in reportes.items():
+        imprimirReporte(reporte)
+    while True:
+        option =  input("""
+            1) Editar un reporte
+            2) Regresar
+
+            Favor de eleguir una opcion del menu?: """) 
+        if option not in ['1', '2']:
+            print("Opcion invalida")
+            continue
+        if(option=='1'):
+            editar_reporte()
+        if(option=='2'):
+            break
+
+def editar_reporte():
+    reporte=ver_reporte()
+    while True:
+        option =  input("""
+            1) Editar Estatus
+            2) Editar Prioridad
+            3) Regresar
+
+            Favor de elequir una opcion del menu?: """) 
+        if option not in ['1', '2', '3']:
+            print("Opcion invalida")
+            continue
+        if(option=='1'):
+            editar_estatus_reporte(reporte)
+        if(option=='2'):
+            editar_prioridad_reporte(reporte)
+        if(option=='3'):
+            break
+def editar_estatus_reporte(reporte):
+     while True:
+        option =  input("""
+            Mover estatus a:
+            1) Pendiente
+            2) En revisión
+            3) En reparación
+            4) Resuelto
+            5) Cancelar
+             """) 
+        if option not in ['1', '2', '3','4','5']:
+            print("Opcion invalida")
+            continue
+        if(option=='1'):
+            reporte.estatus ='Pendiente'
+        if(option=='2'):
+            reporte.estatus ='En revisión'
+        if(option=='3'):
+            reporte.estatus ='En reparación'
+        if(option=='4'):
+            reporte.estatus ='Resuelto'
+        if(option=='5'):
+            break
+
+def editar_prioridad_reporte(reporte):
+    while True:
+        option =  input("""
+            Cambiar prioridad a(1 a 10):
+            
+             """) 
+        if option not in ['1', '2', '3','4','5','6','7','8','9','10']:
+            print("Opcion invalida")
+            continue
+        reporte.prioridad =option
+        break
+
+def imprimirReporte(reporte):
+    print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}, prioridad:{reporte.prioridad}")
+
+def login():
+    user_name = input("Introdusca su usuario:")
+    password = getpass.getpass('Introdusca su password:')
+    if(user_name== "Admin" and password=="Admin"):
+        user = Usuario(1,user_name,1)
+        mostrarMenuAdmin()
+    elif(user_name== "Inspector" and password=="Inspector"):
+        user = Usuario(1,user_name,2)
+        mostrarMenuAdmin()
+    else:
+        print("lo sentimos, usuario incorrecto intente de nuevo")
+        login()
+
+def seguimiento_dano():
+    print("en proceso")
+
+def mostrarMenuAdmin():    
+    menuAdmin = {'1': ver_reportes, '2': ver_danios,}
+    answer = 's'
+    print("=" * 80)
+    print("Sistema de Administración de Reportes de desperfectos viales")
+    print("\t\tAlcaldia de Monterrey")
+    print("=" * 80)
+    while answer == 's':
+        option = input("""
+            1) Ver reportes de Baches
+            2) Ver reportes de daños a vehiculos
+            Favor de elequir una opcion del menu?: """)
+        print("=" * 80)
+        if option not in ['1', '2']:
+            print("Opcion invalida")
+        else:
+            menuAdmin[option]()
+        answer = input("Desea registrar otro reporte? S/N: ").lower()
+        while answer not in ['s', 'n']:
+            answer = input("Desea registrar otro reporte? S/N: ").lower()
+        if answer == 'n':
+            break
+
 def crear_orden_trabajo(id_reporte):
 
     trab = {}
@@ -290,8 +410,7 @@ def crear_orden_trabajo(id_reporte):
     if id_reporte in reportes:
         r = reportes[id_reporte]
         reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
-
-        
+		
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
@@ -303,11 +422,12 @@ if __name__ == '__main__':
         option = input("""
         1) Reporte de Bache
         2) Reporte daño a vehiculo
-        3) Ingresar Sistema Interno
+        3) Seguimiento reporte de daño
+        4) Ingresar Sistema Interno
 
         Favor de elequir una opcion del menu?: """)
         print("=" * 80)
-        if option not in ['1', '2', '3']:
+        if option not in ['1', '2', '3','4']:
             print("Opcion invalida")
         else:
             if option == '1':
@@ -315,7 +435,9 @@ if __name__ == '__main__':
             if option == '2':
                 registrar_dano()
             if option == '3':
-                accesar()
+                seguimiento_dano()
+            if option == '4':
+                login()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
         while answer not in ['s', 'n']:
             answer = input("Desea registrar otro reporte? S/N: ").lower()
