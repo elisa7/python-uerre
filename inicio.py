@@ -405,6 +405,7 @@ def crear_orden_trabajo(id_reporte):
     cuadrilla = Cuadrilla(uuid.uuid4(), trab)
     fechare = input("Ingresa Fecha de reparación: ")
     costo = input("Ingresa Costo de reparación: ")
+    revision = Revision()
     orden = OrdenTrabajo(cuadrilla, revision, fechare, costo)
 
     if id_reporte in reportes:
