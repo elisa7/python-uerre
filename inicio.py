@@ -199,14 +199,14 @@ def registrar_dano():
     pNombre = input("Nombre Ciudadano: ")
     print("Direccion Ciudadano\n")
     pCalle = input("Calle: ")
-    pNumero = input("Numero: ")
+    pNumero = input("Número: ")
     pColonia = input("Colonia: ")
     pEntrecalles = input("Entre calles:")
     direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
     pTelefono = input("Telefono de contacto: ")
     ciudadano = Ciudadano(pId, pNombre, direccion, pTelefono)
-    placas = input("Placas del vehiculo: ")
-    descripcion = input("Descripcion del Vehiculo; color, modelo, marca :")
+    placas = input("Placas del vehículo: ")
+    descripcion = input("Descripción del vehículo; color, modelo, marca :")
     vehiculo = Vehiculo(placas, descripcion)
     desperfectos = 'desperfectos'
     estatus = 'En Revision'
@@ -221,13 +221,13 @@ def accesar():
     answer = 's'
     print("=" * 80)
     print("Sistema de Administración de Reportes de desperfectos viales")
-    print("\t\tAlcaldia de Monterrey")
+    print("\t\tAlcaldía de Monterrey")
     print("=" * 80)
     while answer == 's':
         option = input("""
             1) Reportes de Baches
             2) Reportes de daños a vehiculos
-            Favor de elequir una opcion del menu?: """)
+            Favor de elegir una opción del menu?: """)
         print("=" * 80)
         if option not in ['1', '2']:
             print("Opcion invalida")
@@ -271,9 +271,9 @@ def ver_reportes():
             1) Editar un reporte
             2) Regresar
 
-            Favor de eleguir una opcion del menu?: """) 
+            Favor de elegir una opción del menu: """) 
         if option not in ['1', '2']:
-            print("Opcion invalida")
+            print("Opción invalida")
             continue
         if(option=='1'):
             editar_reporte()
@@ -288,9 +288,9 @@ def editar_reporte():
             2) Editar Prioridad
             3) Regresar
 
-            Favor de elequir una opcion del menu?: """) 
+            Favor de elequir una opción del menu: """) 
         if option not in ['1', '2', '3']:
-            print("Opcion invalida")
+            print("Opción invalida")
             continue
         if(option=='1'):
             editar_estatus_reporte(reporte)
@@ -309,7 +309,7 @@ def editar_estatus_reporte(reporte):
             5) Cancelar
              """) 
         if option not in ['1', '2', '3','4','5']:
-            print("Opcion invalida")
+            print("Opción invalida")
             continue
         if(option=='1'):
             reporte.estatus ='Pendiente'
@@ -329,7 +329,7 @@ def editar_prioridad_reporte(reporte):
             
              """) 
         if option not in ['1', '2', '3','4','5','6','7','8','9','10']:
-            print("Opcion invalida")
+            print("Opción invalida")
             continue
         reporte.prioridad =option
         break
@@ -338,16 +338,16 @@ def imprimirReporte(reporte):
     print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}, prioridad:{reporte.prioridad}")
 
 def login():
-    user_name = input("Introdusca su usuario:")
-    password = getpass.getpass('Introdusca su password:')
+    user_name = input("Introduzca su usuario:")
+    password = getpass.getpass('Introduzca su password:')
     if(user_name== "Admin" and password=="Admin"):
-        user = Usuario(1,user_name,1)
+        user = Usuario(1, user_name, 1)
         mostrarMenuAdmin()
     elif(user_name== "Inspector" and password=="Inspector"):
-        user = Usuario(1,user_name,2)
+        user = Usuario(1, user_name, 2)
         mostrarMenuAdmin()
     else:
-        print("lo sentimos, usuario incorrecto intente de nuevo")
+        print("Lo sentimos, usuario incorrecto intente de nuevo")
         login()
 
 def seguimiento_dano():
@@ -391,12 +391,12 @@ def crear_orden_trabajo(id_reporte):
         for x in range(tam):
             print(x + ") " + trabajadores[x].nombre)
 
-        option = input("Selecione el numero de trabajador")
+        option = input("Selecione el número de trabajador")
         
         if option > 0 & option < tam:
             trab[option] = trabajadores[option]
         else: 
-            print("Opcion invalida")
+            print("Opción invalida")
         answer_reg_trabajador = input("Desea registrar asignar otro trabajador? S/N: ").lower()
         while answer_reg_trabajador not in ['s', 'n']:
             answer_reg_trabajador = input("Desea registrar asignar otro trabajador: ").lower()
@@ -425,10 +425,10 @@ if __name__ == '__main__':
         3) Seguimiento reporte de daño
         4) Ingresar Sistema Interno
 
-        Favor de elequir una opcion del menu?: """)
+        Favor de elegir una opción del menu?: """)
         print("=" * 80)
         if option not in ['1', '2', '3','4']:
-            print("Opcion invalida")
+            print("Opción invalida")
         else:
             if option == '1':
                 registrar_bache()
