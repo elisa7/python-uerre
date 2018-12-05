@@ -2,10 +2,23 @@
 import uuid
 from datetime import datetime
 
+
+class Trabajador(object):
+    def __init__(self, idtrabajador, nombre):
+        self.idtrabajador = idtrabajador
+        self.nombre = nombre
+        
+        
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
 
 reportes = {}
 reportes_danos = {}
+trabajadores = {}
+trabajadores["tamano"] = 4
+trabajadores["1"] = Trabajador(uuid.uuid4(), "Juan")
+trabajadores["2"] = Trabajador(uuid.uuid4(), "Jose")
+trabajadores["3"] = Trabajador(uuid.uuid4(), "Maria")
+trabajadores["4"] = Trabajador(uuid.uuid4(), "Pedro")
 
 
 class Reporte(object):
@@ -97,7 +110,13 @@ class MaterialRequerido(object):
         self.materila = material
         self.cantidad = cantidad
 
-
+        
+class Cuadrilla(object):
+    def __init__(self, idcuadrilla, trabajadores):
+        self.idcuadrilla = idcuadrilla
+        self.trabajadores = trabajadores
+        
+        
 # Se  crea la clase Direccion
 class Direccion(object):
     def __init__(self, pCalle, pNumero, pColonia, pEntrecalles):
@@ -236,7 +255,43 @@ def buscar_reporte():
     else:
         return None
 
+    
+def crear_orden_trabajo(id_reporte):
 
+    trab = {}
+    answer_reg_trabajador = 's'
+    print("=" * 80)
+    print("Asginar Trabajadores a Cuadrilla")
+
+    print("=" * 80)
+
+    while answer_reg_trabajador == 's':
+        tam = trabajadores["tamano"]
+
+        for x in range(tam):
+            print(x + ") " + trabajadores[x].nombre)
+
+        option = input("Selecione el numero de trabajador")
+        
+        if option > 0 & option < tam:
+            trab[option] = trabajadores[option]
+        else: 
+            print("Opcion invalida")
+        answer_reg_trabajador = input("Desea registrar asignar otro trabajador? S/N: ").lower()
+        while answer_reg_trabajador not in ['s', 'n']:
+            answer_reg_trabajador = input("Desea registrar asignar otro trabajador: ").lower()
+        if answer_reg_trabajador == 'n':
+            break
+    cuadrilla = Cuadrilla(uuid.uuid4(), trab)
+    fechare = input("Ingresa Fecha de reparación: ")
+    costo = input("Ingresa Costo de reparación: ")
+    orden = OrdenTrabajo(cuadrilla, revision, fechare, costo)
+
+    if id_reporte in reportes:
+        r = reportes[id_reporte]
+        reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
+
+        
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
