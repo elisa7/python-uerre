@@ -238,16 +238,49 @@ def accesar():
             answer = input("Desea registrar otro reporte? S/N: ").lower()
         if answer == 'n':
             break
+#----------------------------------------------------------------------------------
+def mostrarMenuCiudadano():
+    menuAdmin = {'1': seguimiento_reporte, '2': seguimiento_dano, }
+    answer = 's'
+    print("=" * 80)
+    print("Sistema de Seguimiento de Reportes de desperfectos viales")
+    print("\t\tAlcaldia de Monterrey")
+    print("=" * 80)
+    while answer == 's':
+        option = input("""
+            1) Consultar reporte de Baches
+            2) Consultar reporte de daños a vehiculos
+            Favor de elequir una opcion del menu?: """)
+        print("=" * 80)
+        if option not in ['1', '2']:
+            print("Opcion invalida")
+        else:
+            menuAdmin[option]()
+        answer = input("Desea consultar otro reporte? S/N: ").lower()
+        while answer not in ['s', 'n']:
+            answer = input("Desea consultar otro reporte? S/N: ").lower()
+        if answer == 'n':
+            break
+def seguimiento_dano():
+    ver_danio()
 
-
+def seguimiento_reporte():
+    ver_reporte()
+	
 def buscar_dano():
-    id_dano =int( input("Introduzca el ID del daño: ") )
+    id_dano =int( input("Introduzca el ID del reporte de daño: ") )
     if id_dano in reportes_danos.keys():
         return reportes_danos[id_dano]
     else:
         return None
+
 def ver_danio():
-    print("Pediente")
+    reporte = buscar_dano()
+    imprimirDano(reporte)
+    return reporte
+
+def imprimirDano(reporte):
+    print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}")
 
 def ver_danios():
     print("Pediente")
@@ -350,9 +383,6 @@ def login():
         print("Lo sentimos, usuario incorrecto intente de nuevo")
         login()
 
-def seguimiento_dano():
-    print("en proceso")
-
 def mostrarMenuAdmin():    
     menuAdmin = {'1': ver_reportes, '2': ver_danios,}
     answer = 's'
@@ -436,7 +466,7 @@ if __name__ == '__main__':
             if option == '2':
                 registrar_dano()
             if option == '3':
-                seguimiento_dano()
+                mostrarMenuCiudadano()
             if option == '4':
                 login()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
