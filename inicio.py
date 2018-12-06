@@ -2,19 +2,14 @@
 import uuid
 from datetime import datetime
 import getpass
+import pickle
+
 
 class Trabajador(object):
     def __init__(self, idtrabajador, nombre):
         self.idtrabajador = idtrabajador
         self.nombre = nombre
-        
-        
-# Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
-trab_temp = {}
-reportes = {}
-reportes_danos = {}
-trabajadores = {}
-user = None
+
 
 class Reporte(object):
 
@@ -105,13 +100,13 @@ class MaterialRequerido(object):
         self.materila = material
         self.cantidad = cantidad
 
-        
+
 class Cuadrilla(object):
     def __init__(self, idcuadrilla, trabajadores):
         self.idcuadrilla = idcuadrilla
         self.trabajadores = trabajadores
-        
-        
+
+
 # Se  crea la clase Direccion
 class Direccion(object):
     def __init__(self, pCalle, pNumero, pColonia, pEntrecalles):
@@ -233,7 +228,9 @@ def accesar():
             answer = input("Desea registrar otro reporte? S/N: ").lower()
         if answer == 'n':
             break
-#----------------------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------------------
 def mostrarMenuCiudadano():
     menuAdmin = {'1': seguimiento_reporte, '2': seguimiento_dano, }
     answer = 's'
@@ -256,29 +253,37 @@ def mostrarMenuCiudadano():
             answer = input("Desea consultar otro reporte? S/N: ").lower()
         if answer == 'n':
             break
+
+
 def seguimiento_dano():
     ver_danio()
 
+
 def seguimiento_reporte():
     ver_reporte()
-	
+
+
 def buscar_dano():
-    id_dano =int( input("Introduzca el ID del reporte de daño: ") )
+    id_dano = int(input("Introduzca el ID del reporte de daño: "))
     if id_dano in reportes_danos.keys():
         return reportes_danos[id_dano]
     else:
         return None
+
 
 def ver_danio():
     reporte = buscar_dano()
     imprimirDano(reporte)
     return reporte
 
+
 def imprimirDano(reporte):
     print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}")
 
+
 def ver_danios():
     print("Pediente")
+
 
 def buscar_reporte():
     id_reporte = int(input("Introduzca el ID del reporte: "))
@@ -286,103 +291,112 @@ def buscar_reporte():
         return reportes[id_reporte]
     else:
         return None
+
+
 def ver_reporte():
-    reporte=buscar_reporte()
+    reporte = buscar_reporte()
     imprimirReporte(reporte)
     return reporte
+
 
 def ver_reportes():
     for id, reporte in reportes.items():
         imprimirReporte(reporte)
     while True:
-        option =  input("""
+        option = input("""
             1) Editar un reporte
             2) Regresar
 
-            Favor de elegir una opción del menu: """) 
+            Favor de elegir una opción del menu: """)
         if option not in ['1', '2']:
             print("Opción invalida")
             continue
-        if(option=='1'):
+        if option == '1':
             editar_reporte()
-        if(option=='2'):
+        if option == '2':
             break
 
+
 def editar_reporte():
-    reporte=ver_reporte()
+    reporte = ver_reporte()
     while True:
-        option =  input("""
+        option = input("""
             1) Editar Estatus
             2) Editar Prioridad
-	    3) Crear Orden de Trabajo
+            3) Crear Orden de Trabajo
             4) Regresar
-
-            Favor de elequir una opción del menu: """) 
+            Favor de elequir una opción del menu: """)
         if option not in ['1', '2', '3', '4']:
             print("Opción invalida")
             continue
-        if(option=='1'):
+        if option == '1':
             editar_estatus_reporte(reporte)
-        if(option=='2'):
+        if option == '2':
             editar_prioridad_reporte(reporte)
-        if(option=='3'):
-	    crear_orden_trabajo(reporte.id)
-        if(option=='4'):
+        if option == '3':
+            crear_orden_trabajo(reporte.id)
+        if option == '4':
             break
+
+
 def editar_estatus_reporte(reporte):
-     while True:
-        option =  input("""
+    while True:
+        option = input("""
             Mover estatus a:
             1) Pendiente
             2) En revisión
             3) En reparación
             4) Resuelto
             5) Cancelar
-             """) 
-        if option not in ['1', '2', '3','4','5']:
+             """)
+        if option not in ['1', '2', '3', '4', '5']:
             print("Opción invalida")
             continue
-        if(option=='1'):
-            reporte.estatus ='Pendiente'
-        if(option=='2'):
-            reporte.estatus ='En revisión'
-        if(option=='3'):
-            reporte.estatus ='En reparación'
-        if(option=='4'):
-            reporte.estatus ='Resuelto'
-        if(option=='5'):
+        if option == '1':
+            reporte.estatus = 'Pendiente'
+        if option == '2':
+            reporte.estatus = 'En revisión'
+        if option == '3':
+            reporte.estatus = 'En reparación'
+        if option == '4':
+            reporte.estatus = 'Resuelto'
+        if option == '5':
             break
+
 
 def editar_prioridad_reporte(reporte):
     while True:
-        option =  input("""
+        option = input("""
             Cambiar prioridad a(1 a 10):
-            
-             """) 
-        if option not in ['1', '2', '3','4','5','6','7','8','9','10']:
+
+             """)
+        if option not in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']:
             print("Opción invalida")
             continue
-        reporte.prioridad =option
+        reporte.prioridad = option
         break
+
 
 def imprimirReporte(reporte):
     print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}, prioridad:{reporte.prioridad}")
 
+
 def login():
     user_name = input("Introduzca su usuario:")
     password = getpass.getpass('Introduzca su password:')
-    if(user_name== "Admin" and password=="Admin"):
+    if (user_name == "Admin" and password == "Admin"):
         user = Usuario(1, user_name, 1)
         mostrarMenuAdmin()
-    elif(user_name== "Inspector" and password=="Inspector"):
+    elif (user_name == "Inspector" and password == "Inspector"):
         user = Usuario(1, user_name, 2)
         mostrarMenuAdmin()
     else:
         print("Lo sentimos, usuario incorrecto intente de nuevo")
         login()
 
-def mostrarMenuAdmin():    
-    menuAdmin = {'1': ver_reportes, '2': ver_danios,}
+
+def mostrarMenuAdmin():
+    menuAdmin = {'1': ver_reportes, '2': ver_danios, }
     answer = 's'
     print("=" * 80)
     print("Sistema de Administración de Reportes de desperfectos viales")
@@ -404,11 +418,12 @@ def mostrarMenuAdmin():
         if answer == 'n':
             break
 
+
 def obtener_trabajador(option):
     return trabajadores[option]
 
-def crear_orden_trabajo(id_reporte):
 
+def crear_orden_trabajo(id_reporte):
     t1 = Trabajador(uuid.uuid4().int, "Juan")
     trabajadores[t1.idtrabajador] = t1
 
@@ -453,7 +468,53 @@ def crear_orden_trabajo(id_reporte):
     if id_reporte in reportes:
         r = reportes[id_reporte]
         reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
-      		
+
+
+# Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
+
+try:
+    f = open("trab_temp.pkl", "rb")
+    trab_temp = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    trab_temp = {}
+try:
+    f = open("reportes.pkl", "rb")
+    reportes = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    reportes = {}
+try:
+    f = open("reportes_danos.pkl", "rb")
+    reportes_danos = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    reportes_danos = {}
+try:
+    f = open("trabajadores.pkl", "rb")
+    trabajadores = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    trabajadores = {}
+user = None
+
+
+def commit():
+    f = open("trab_temp.pkl", "wb")
+    pickle.dump(trab_temp, f)
+    f.close()
+    f = open("reportes.pkl", "wb")
+    pickle.dump(reportes, f)
+    f.close()
+    f = open("reportes_danos.pkl", "wb")
+    pickle.dump(reportes_danos, f)
+    f.close()
+    f = open("trabajadores.pkl", "wb")
+    pickle.dump(trabajadores, f)
+    f.close()
+
+
+
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
@@ -470,7 +531,7 @@ if __name__ == '__main__':
 
         Favor de elegir una opción del menu?: """)
         print("=" * 80)
-        if option not in ['1', '2', '3','4']:
+        if option not in ['1', '2', '3', '4']:
             print("Opción invalida")
         else:
             if option == '1':
@@ -481,8 +542,9 @@ if __name__ == '__main__':
                 mostrarMenuCiudadano()
             if option == '4':
                 login()
-        answer = input("Desea registrar otro reporte? S/N: ").lower()
+        answer = input("Desea continuar en el sistema? S/N: ").lower()
+        commit()
         while answer not in ['s', 'n']:
-            answer = input("Desea registrar otro reporte? S/N: ").lower()
+            answer = input("Desea continuar en el sistema? S/N: ").lower()
         if answer == 'n':
             break
