@@ -10,15 +10,10 @@ class Trabajador(object):
         
         
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
-
+trab_temp = {}
 reportes = {}
 reportes_danos = {}
 trabajadores = {}
-trabajadores["tamano"] = 4
-trabajadores["1"] = Trabajador(uuid.uuid4(), "Juan")
-trabajadores["2"] = Trabajador(uuid.uuid4(), "Jose")
-trabajadores["3"] = Trabajador(uuid.uuid4(), "Maria")
-trabajadores["4"] = Trabajador(uuid.uuid4(), "Pedro")
 user = None
 
 class Reporte(object):
@@ -319,10 +314,11 @@ def editar_reporte():
         option =  input("""
             1) Editar Estatus
             2) Editar Prioridad
-            3) Regresar
+	    3) Crear Orden de Trabajo
+            4) Regresar
 
             Favor de elequir una opción del menu: """) 
-        if option not in ['1', '2', '3']:
+        if option not in ['1', '2', '3', '4']:
             print("Opción invalida")
             continue
         if(option=='1'):
@@ -330,6 +326,8 @@ def editar_reporte():
         if(option=='2'):
             editar_prioridad_reporte(reporte)
         if(option=='3'):
+	    crear_orden_trabajo(reporte.id)
+        if(option=='4'):
             break
 def editar_estatus_reporte(reporte):
      while True:
@@ -406,9 +404,24 @@ def mostrarMenuAdmin():
         if answer == 'n':
             break
 
+def obtener_trabajador(option):
+    return trabajadores[option]
+
 def crear_orden_trabajo(id_reporte):
 
-    trab = {}
+    t1 = Trabajador(uuid.uuid4().int, "Juan")
+    trabajadores[t1.idtrabajador] = t1
+
+    t2 = Trabajador(uuid.uuid4().int, "Jose")
+    trabajadores[t2.idtrabajador] = t2
+
+    t3 = Trabajador(uuid.uuid4().int, "Maria")
+    trabajadores[t3.idtrabajador] = t3
+
+    t4 = Trabajador(uuid.uuid4().int, "Pedro")
+    trabajadores[t4.idtrabajador] = t4
+
+    trab_temp = {}
     answer_reg_trabajador = 's'
     print("=" * 80)
     print("Asginar Trabajadores a Cuadrilla")
@@ -416,32 +429,31 @@ def crear_orden_trabajo(id_reporte):
     print("=" * 80)
 
     while answer_reg_trabajador == 's':
-        tam = trabajadores["tamano"]
+        for id, trab in trabajadores.items():
+            print(f"Id:{trab.idtrabajador}  , Nombre: {trab.nombre}")
 
-        for x in range(tam):
-            print(x + ") " + trabajadores[x].nombre)
+        option = (input("Selecione el numero de trabajador: "))
 
-        option = input("Selecione el número de trabajador")
-        
-        if option > 0 & option < tam:
-            trab[option] = trabajadores[option]
-        else: 
-            print("Opción invalida")
+        if int(option) in trabajadores.keys():
+            trab_temp[str(option)] = trabajadores.get(int(option))
+        else:
+            print("Opcion invalida")
+
         answer_reg_trabajador = input("Desea registrar asignar otro trabajador? S/N: ").lower()
         while answer_reg_trabajador not in ['s', 'n']:
             answer_reg_trabajador = input("Desea registrar asignar otro trabajador: ").lower()
         if answer_reg_trabajador == 'n':
             break
-    cuadrilla = Cuadrilla(uuid.uuid4(), trab)
-    fechare = input("Ingresa Fecha de reparación: ")
-    costo = input("Ingresa Costo de reparación: ")
-    revision = Revision()
-    orden = OrdenTrabajo(cuadrilla, revision, fechare, costo)
+    cuadrilla = Cuadrilla(uuid.uuid4(), trab_temp)
+    fechare = input("Ingresa Fecha de reparaciÃ³n: ")
+    costo = input("Ingresa Costo de reparaciÃ³n: ")
+
+    orden = OrdenTrabajo(cuadrilla, None, fechare, costo)
 
     if id_reporte in reportes:
         r = reportes[id_reporte]
         reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
-		
+      		
 # inicio de programa
 if __name__ == '__main__':
     answer = 's'
