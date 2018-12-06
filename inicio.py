@@ -430,7 +430,8 @@ def llena_catalogos():
     trabajadores[t3.idtrabajador] = t3
     t4 = Trabajador(uuid.uuid4().int, "Pedro")
     trabajadores[t4.idtrabajador] = t4
-
+    commit()
+    
     e1 = Equipo("Protección","Casco")
     equipos[e1.id] = e1
     e2 = Equipo("Protección","Botas")
@@ -441,6 +442,7 @@ def llena_catalogos():
     equipos[e4.id] = e4
     e5 = Equipo("Electrico","Cortadora")
     equipos[e5.id] = e5
+    commit()
 
     m1 = Material("Materiales compuestos","Grava")
     materiales[m1.id] = m1
@@ -452,6 +454,7 @@ def llena_catalogos():
     materiales[m4.id] = m4
     m5 = Material("Materiales metálicos","Varilla 2' 1 metro")
     materiales[m5.id] = m5
+    commit()
 
 
 def crear_orden_trabajo(id_reporte):
@@ -495,7 +498,9 @@ def crear_orden_trabajo(id_reporte):
 
 def crea_revision():
     equipos_temp  =  {}
+    commit()
     materiales_temp  =  {}
+    commit()
     answer_material = 's'
     answer_equipos = 's'
 
@@ -509,6 +514,7 @@ def crea_revision():
         option = (input("Selecione el numero de equipo: "))
         if int(option) in equipos.keys():
             equipos_temp[str(option)] = equipos.get(int(option))
+            commit()
         else:
             print("Opcion invalida")
         answer_equipos = input("Desea agregar otro equipo? S/N: ").lower()
@@ -529,6 +535,7 @@ def crea_revision():
             cantidad = (input("Ingrese cantidad requerida: "))
             mat_req = MaterialRequerido(materiales.get(int(option)), cantidad)
             materiales_temp[str(option)] = mat_req
+            commit()
         else:
             print("Opcion invalida")
         answer_material = input("Desea agregar otro material? S/N: ").lower()
@@ -565,6 +572,30 @@ try:
     f.close()
 except FileNotFoundError:
     trabajadores = {}
+try:
+    f = open("equipos.pkl", "rb")
+    equipos = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    equipos = {}
+try:
+    f = open("materiales.pkl", "rb")
+    materiales = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    materiales = {}
+try:
+    f = open("equipos_temp.pkl", "rb")
+    equipos_temp = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    equipos_temp = {}
+try:
+    f = open("materiales_temp.pkl", "rb")
+    materiales_temp = pickle.load(f)
+    f.close()
+except FileNotFoundError:
+    materiales_temp = {}
 user = None
 
 
@@ -580,6 +611,18 @@ def commit():
     f.close()
     f = open("trabajadores.pkl", "wb")
     pickle.dump(trabajadores, f)
+    f.close()
+    f = open("equipos.pkl", "wb")
+    pickle.dump(equipos, f)
+    f.close()
+    f = open("materiales.pkl", "wb")
+    pickle.dump(materiales, f)
+    f.close()
+    f = open("equipos_temp.pkl", "wb")
+    pickle.dump(equipos_temp, f)
+    f.close()
+    f = open("materiales_temp.pkl", "wb")
+    pickle.dump(materiales_temp, f)
     f.close()
 
 
