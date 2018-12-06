@@ -423,39 +423,42 @@ def mostrarMenuAdmin():
 
 
 def llena_catalogos():
-    t1 = Trabajador(uuid.uuid4().int, "Juan")
-    trabajadores[t1.idtrabajador] = t1
-    t2 = Trabajador(uuid.uuid4().int, "Jose")
-    trabajadores[t2.idtrabajador] = t2
-    t3 = Trabajador(uuid.uuid4().int, "Maria")
-    trabajadores[t3.idtrabajador] = t3
-    t4 = Trabajador(uuid.uuid4().int, "Pedro")
-    trabajadores[t4.idtrabajador] = t4
-    commit()
-    
-    e1 = Equipo("Protección","Casco")
-    equipos[e1.id] = e1
-    e2 = Equipo("Protección","Botas")
-    equipos[e2.id] = e2
-    e3 = Equipo("Protección","Guantes")
-    equipos[e3.id] = e3
-    e4 = Equipo("Electrico","Taladro")
-    equipos[e4.id] = e4
-    e5 = Equipo("Electrico","Cortadora")
-    equipos[e5.id] = e5
-    commit()
+    if len(trabajadores.keys()) == 0:
+        t1 = Trabajador(uuid.uuid4().int, "Juan")
+        trabajadores[t1.idtrabajador] = t1
+        t2 = Trabajador(uuid.uuid4().int, "Jose")
+        trabajadores[t2.idtrabajador] = t2
+        t3 = Trabajador(uuid.uuid4().int, "Maria")
+        trabajadores[t3.idtrabajador] = t3
+        t4 = Trabajador(uuid.uuid4().int, "Pedro")
+        trabajadores[t4.idtrabajador] = t4
+        commit()
 
-    m1 = Material("Materiales compuestos","Grava")
-    materiales[m1.id] = m1
-    m2 = Material("Materiales compuestos","Cemento")
-    materiales[m2.id] = m2
-    m3 = Material("Materiales compuestos","Arena")
-    materiales[m3.id] = m3
-    m4 = Material("Materiales metálicos","Varilla calibre 12")
-    materiales[m4.id] = m4
-    m5 = Material("Materiales metálicos","Varilla 2' 1 metro")
-    materiales[m5.id] = m5
-    commit()
+    if len(equipos.keys()) == 0:
+        e1 = Equipo("Protección", "Casco")
+        equipos[e1.id] = e1
+        e2 = Equipo("Protección", "Botas")
+        equipos[e2.id] = e2
+        e3 = Equipo("Protección", "Guantes")
+        equipos[e3.id] = e3
+        e4 = Equipo("Electrico", "Taladro")
+        equipos[e4.id] = e4
+        e5 = Equipo("Electrico", "Cortadora")
+        equipos[e5.id] = e5
+        commit()
+
+    if len(materiales.keys()) == 0:
+        m1 = Material("Materiales compuestos", "Grava")
+        materiales[m1.id] = m1
+        m2 = Material("Materiales compuestos", "Cemento")
+        materiales[m2.id] = m2
+        m3 = Material("Materiales compuestos", "Arena")
+        materiales[m3.id] = m3
+        m4 = Material("Materiales metálicos", "Varilla calibre 12")
+        materiales[m4.id] = m4
+        m5 = Material("Materiales metálicos", "Varilla 2' 1 metro")
+        materiales[m5.id] = m5
+        commit()
 
 
 def crear_orden_trabajo(id_reporte):
@@ -486,8 +489,8 @@ def crear_orden_trabajo(id_reporte):
         if answer_reg_trabajador == 'n':
             break
     cuadrilla = Cuadrilla(uuid.uuid4().int, trab_temp)
-    fechare = input("Ingresa Fecha de reparaciÃ³n: ")
-    costo = input("Ingresa Costo de reparaciÃ³n: ")
+    fechare = input("Ingresa Fecha de reparación: ")
+    costo = input("Ingresa Costo de reparación: ")
     rev = crea_revision()
     orden = OrdenTrabajo(cuadrilla, rev, fechare, costo)
 
