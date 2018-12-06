@@ -70,7 +70,7 @@ class Revision(object):
 class OrdenTrabajo(object):
 
     def __init__(self, cuadrillas, revision, fecha_reparacion, costo):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.cuadrillas = cuadrillas
         self.revision = revision
         self.fecha_reparacion = fecha_reparacion
@@ -80,7 +80,7 @@ class OrdenTrabajo(object):
 class Equipo(object):
 
     def __init__(self, tipo, descripcion):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.tipo = tipo
         self.descipcion = descripcion
 
@@ -88,7 +88,7 @@ class Equipo(object):
 class Material(object):
 
     def __init__(self, tipo, descripcion):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.tipo = tipo
         self.descipcion = descripcion
 
@@ -96,7 +96,7 @@ class Material(object):
 class MaterialRequerido(object):
 
     def __init__(self, material, cantidad):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid4().int
         self.materila = material
         self.cantidad = cantidad
 
@@ -421,23 +421,41 @@ def mostrarMenuAdmin():
             break
 
 
-def obtener_trabajador(option):
-    return trabajadores[option]
-
-
-def crear_orden_trabajo(id_reporte):
+def llena_catalogos():
     t1 = Trabajador(uuid.uuid4().int, "Juan")
     trabajadores[t1.idtrabajador] = t1
-
     t2 = Trabajador(uuid.uuid4().int, "Jose")
     trabajadores[t2.idtrabajador] = t2
-
     t3 = Trabajador(uuid.uuid4().int, "Maria")
     trabajadores[t3.idtrabajador] = t3
-
     t4 = Trabajador(uuid.uuid4().int, "Pedro")
     trabajadores[t4.idtrabajador] = t4
 
+    e1 = Equipo("Protección","Casco")
+    equipos[e1.id] = e1
+    e2 = Equipo("Protección","Botas")
+    equipos[e2.id] = e2
+    e3 = Equipo("Protección","Guantes")
+    equipos[e3.id] = e3
+    e4 = Equipo("Electrico","Taladro")
+    equipos[e4.id] = e4
+    e5 = Equipo("Electrico","Cortadora")
+    equipos[e5.id] = e5
+
+    m1 = Material("Materiales compuestos","Grava")
+    materiales[m1.id] = m1
+    m2 = Material("Materiales compuestos","Cemento")
+    materiales[m2.id] = m2
+    m3 = Material("Materiales compuestos","Arena")
+    materiales[m3.id] = m3
+    m4 = Material("Materiales metálicos","Varilla calibre 12")
+    materiales[m4.id] = m4
+    m5 = Material("Materiales metálicos","Varilla 2' 1 metro")
+    materiales[m5.id] = m5
+
+
+def crear_orden_trabajo(id_reporte):
+    
     trab_temp = {}
     commit()
     answer_reg_trabajador = 's'
@@ -458,23 +476,69 @@ def crear_orden_trabajo(id_reporte):
         else:
             print("Opcion invalida")
 
-        answer_reg_trabajador = input("Desea registrar asignar otro trabajador? S/N: ").lower()
+        answer_reg_trabajador = input("Desea asignar otro trabajador? S/N: ").lower()
         while answer_reg_trabajador not in ['s', 'n']:
-            answer_reg_trabajador = input("Desea registrar asignar otro trabajador: ").lower()
+            answer_reg_trabajador = input("Desea asignar otro trabajador: ").lower()
         if answer_reg_trabajador == 'n':
             break
-    cuadrilla = Cuadrilla(uuid.uuid4(), trab_temp)
+    cuadrilla = Cuadrilla(uuid.uuid4().int, trab_temp)
     fechare = input("Ingresa Fecha de reparaciÃ³n: ")
     costo = input("Ingresa Costo de reparaciÃ³n: ")
-
-    orden = OrdenTrabajo(cuadrilla, None, fechare, costo)
+    rev = crea_revision()
+    orden = OrdenTrabajo(cuadrilla, rev, fechare, costo)
 
     if id_reporte in reportes:
         r = reportes[id_reporte]
         reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
         commit()
+    print(f"Se creo la orden de trabajo con Id:{orden.id}")
 
+def crea_revision():
+    equipos_temp  =  {}
+    materiales_temp  =  {}
+    answer_material = 's'
+    answer_equipos = 's'
 
+    print("=" * 80)
+    print("Seleccion de equipos")
+    print("=" * 80)
+
+    while answer_equipos == 's':
+        for id, equip in equipos.items():
+            print(f"Id:{equip.id}  , Nombre: {equip.tipo}, Nombre: {equip.descipcion}")
+        option = (input("Selecione el numero de equipo: "))
+        if int(option) in equipos.keys():
+            equipos_temp[str(option)] = equipos.get(int(option))
+        else:
+            print("Opcion invalida")
+        answer_equipos = input("Desea agregar otro equipo? S/N: ").lower()
+        while answer_equipos not in ['s', 'n']:
+            answer_equipos = input("Desea agregar otro equipo: ").lower()
+        if answer_equipos == 'n':
+            break
+
+    print("=" * 80)
+    print("Especifique material requerido")
+    print("=" * 80)
+
+    while answer_material == 's':
+        for id, mat in materiales.items():
+            print(f"Id:{mat.id}  , Nombre: {mat.tipo}, Nombre: {mat.descipcion}")
+        option = (input("Selecione el numero del tipo de material: "))
+        if int(option) in materiales.keys():
+            cantidad = (input("Ingrese cantidad requerida: "))
+            mat_req = MaterialRequerido(materiales.get(int(option)), cantidad)
+            materiales_temp[str(option)] = mat_req
+        else:
+            print("Opcion invalida")
+        answer_material = input("Desea agregar otro material? S/N: ").lower()
+        while answer_material not in ['s', 'n']:
+            answer_material = input("Desea agregar otro material: ").lower()
+        if answer_material == 'n':
+            break
+    revision = Revision("programado",materiales_temp, equipos_temp,user)
+    return revision
+    
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
 
 try:
@@ -522,6 +586,7 @@ def commit():
 
 # inicio de programa
 if __name__ == '__main__':
+    llena_catalogos()
     answer = 's'
     print("=" * 80)
     print("Sistema de Reportes de desperfectos viales")
