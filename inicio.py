@@ -161,14 +161,15 @@ class Administrador(Usuario):
 
 def registrar_bache():
     print("Favor de ingresar los datos necesarios para el registro:\n")
-    tipo = input("Tipo de Bache [hoyo/zanja/depresion/irregularidad]: ")
+    tipo = validaopcion("Tipo de Bache [hoyo/zanja/depresion/irregularidad]: ",
+                        ['hoyo', 'zanja', 'depresion', 'irregularidad'])
     print("Direccion\n")
-    pCalle = input("Calle: ")
+    pCalle = validanulo("Calle: ")
     pNumero = 0
-    pColonia = input("Colonia: ")
-    pEntrecalles = input("Entre calles:")
-    tamano = input("Tamano [1 al 10]: ")
-    posicion = input("Posicion [izquierda/centro/derecha: ")
+    pColonia = validanulo("Colonia: ")
+    pEntrecalles = validanulo("Entre calles:")
+    tamano = validaopcion("Tamano [1 al 10]: ", [str(i) for i in range(1, 11)])
+    posicion = validaopcion("Posicion [izquierda/centro/derecha: ", ['izquierda', 'derecha', 'centro'])
     direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
     bache = Bache(tipo, direccion, tamano, posicion)
     estatus = 'Pendiente'
@@ -187,17 +188,17 @@ def registrar_dano():
         print("Para continuar primero registre el Bache")
         registrar_bache()
     pId = uuid.uuid4().int
-    pNombre = input("Nombre Ciudadano: ")
+    pNombre = validanulo("Nombre Ciudadano: ")
     print("Direccion Ciudadano\n")
-    pCalle = input("Calle: ")
-    pNumero = input("Número: ")
-    pColonia = input("Colonia: ")
-    pEntrecalles = input("Entre calles:")
+    pCalle = validanulo("Calle: ")
+    pNumero = validanulo("Número: ")
+    pColonia = validanulo("Colonia: ")
+    pEntrecalles = validanulo("Entre calles:")
     direccion = Direccion(pCalle, pNumero, pColonia, pEntrecalles)
-    pTelefono = input("Telefono de contacto: ")
+    pTelefono = validanulo("Telefono de contacto: ")
     ciudadano = Ciudadano(pId, pNombre, direccion, pTelefono)
-    placas = input("Placas del vehículo: ")
-    descripcion = input("Descripción del vehículo; color, modelo, marca :")
+    placas = validanulo("Placas del vehículo: ")
+    descripcion = validanulo("Descripción del vehículo; color, modelo, marca :")
     vehiculo = Vehiculo(placas, descripcion)
     desperfectos = 'desperfectos'
     estatus = 'En Revision'
@@ -624,7 +625,20 @@ def commit():
     f = open("materiales_temp.pkl", "wb")
     pickle.dump(materiales_temp, f)
     f.close()
+    
+def validanulo(mensaje):
+    opt = input(mensaje)
+    if opt is False:
+        print("Favor de llenar la información")
+        validanulo(mensaje)
+    return opt
 
+def validaopcion(mensaje, opciones):
+    opt = input(mensaje)
+    if opt not in opciones:
+        print("Selección invalida")
+        validaopcion(mensaje, opciones)
+    return opt
 
 
 # inicio de programa
