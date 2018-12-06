@@ -175,6 +175,7 @@ def registrar_bache():
     prioridad = 1
     reporte = ReporteBache(bache, estatus, prioridad)
     reportes[reporte.id] = reporte
+    commit()
     print("Gracias Por registrar su reporte, su numero de registro es:", reporte.id)
     print("Favor de guardarlo para segumientos posteriores")
 
@@ -202,6 +203,7 @@ def registrar_dano():
     estatus = 'En Revision'
     reporte_dano = ReporteDano(ciudadano, desperfectos, reporte, vehiculo, estatus)
     reportes_danos[reporte_dano.id] = reporte_dano
+    commit()
     print("Su registro ha sido guardado, el folio es: ", reporte_dano.id)
 
 
@@ -437,6 +439,7 @@ def crear_orden_trabajo(id_reporte):
     trabajadores[t4.idtrabajador] = t4
 
     trab_temp = {}
+    commit()
     answer_reg_trabajador = 's'
     print("=" * 80)
     print("Asginar Trabajadores a Cuadrilla")
@@ -451,6 +454,7 @@ def crear_orden_trabajo(id_reporte):
 
         if int(option) in trabajadores.keys():
             trab_temp[str(option)] = trabajadores.get(int(option))
+            commit()
         else:
             print("Opcion invalida")
 
@@ -468,6 +472,7 @@ def crear_orden_trabajo(id_reporte):
     if id_reporte in reportes:
         r = reportes[id_reporte]
         reportes[id_reporte] = ReporteBache(r.bache, r.estatus, r.prioridad, orden)
+        commit()
 
 
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
@@ -543,7 +548,6 @@ if __name__ == '__main__':
             if option == '4':
                 login()
         answer = input("Desea continuar en el sistema? S/N: ").lower()
-        commit()
         while answer not in ['s', 'n']:
             answer = input("Desea continuar en el sistema? S/N: ").lower()
         if answer == 'n':
