@@ -267,16 +267,19 @@ def seguimiento_reporte():
 
 
 def buscar_dano():
-    id_dano = int(input("Introduzca el ID del reporte de daño: "))
+    id_dano = validanulo("Introduzca el ID del reporte de daño: ")
     if id_dano in reportes_danos.keys():
         return reportes_danos[id_dano]
     else:
+        print("ID no encontrado")
+        buscar_dano()
         return None
 
 
 def ver_danio():
     reporte = buscar_dano()
-    imprimirDano(reporte)
+    if reporte is not None:
+        imprimirDano(reporte)
     return reporte
 
 
@@ -289,16 +292,19 @@ def ver_danios():
 
 
 def buscar_reporte():
-    id_reporte = int(input("Introduzca el ID del reporte: "))
+    id_reporte = validanulo("Introduzca el ID del reporte: ")
     if id_reporte in reportes.keys():
         return reportes[id_reporte]
     else:
+        print("ID no encontrado")
+        buscar_reporte()
         return None
 
 
 def ver_reporte():
     reporte = buscar_reporte()
-    imprimirReporte(reporte)
+    if reporte is not None:
+        imprimirReporte(reporte)
     return reporte
 
 
@@ -631,7 +637,7 @@ def commit():
     
 def validanulo(mensaje):
     opt = input(mensaje)
-    if opt is False:
+    if opt == '':
         print("Favor de llenar la información")
         validanulo(mensaje)
     return opt
