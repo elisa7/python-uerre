@@ -10,7 +10,10 @@ class Trabajador(object):
         self.idtrabajador = idtrabajador
         self.nombre = nombre
 
+    def imprimir(self):
+        print(f"Id Trabajador:{self.idtrabajador}  , Nombre: {self.nombre}")
 
+        
 class Reporte(object):
 
     def __init__(self):
@@ -66,6 +69,18 @@ class Revision(object):
         self.equipos = equipos
         self.inspector = inspector
 
+    def imprimir(self):
+        print(f"Id Revisión:{self.id} "
+              f"Resultado: {self.resultado}, Inspector: {self.inspector}")
+        print("=" * 80)
+        print("Materiales")
+        for id_mat, mat_elemento in self.materiales.items():
+            mat_elemento.imprimir()
+        print("=" * 80)
+        print("Equipos")
+        for id_equ, equ_elemento in self.equipos.items():
+            equ_elemento.imprimir()
+            
 
 class OrdenTrabajo(object):
 
@@ -75,6 +90,15 @@ class OrdenTrabajo(object):
         self.revision = revision
         self.fecha_reparacion = fecha_reparacion
         self.costo = costo
+       
+    def imprimir(self):
+        print(f"Id Orden de Trabajo:{self.id}  , Costo: {self.costo}, Fecha Reparación: {self.fecha_reparacion}")
+        print("=" * 80)
+        print("Detalle Cuadrilla")
+        self.cuadrillas.imprimir()
+        print("=" * 80)
+        print("Detalle Revisión")
+        self.revision.imprimir()
 
 
 class Equipo(object):
@@ -83,6 +107,9 @@ class Equipo(object):
         self.id = uuid.uuid4().int
         self.tipo = tipo
         self.descipcion = descripcion
+        
+    def imprimir(self):
+        print(f"Id Equipo:{self.id}  , Tipo: {self.tipo}, Descripción: {self.descipcion}")
 
 
 class Material(object):
@@ -92,7 +119,10 @@ class Material(object):
         self.tipo = tipo
         self.descipcion = descripcion
 
+    def imprimir(self):
+        print(f"Id Material:{self.id}  , Tipo: {self.tipo}, Descripción: {self.descipcion}")
 
+        
 class MaterialRequerido(object):
 
     def __init__(self, material, cantidad):
@@ -100,11 +130,22 @@ class MaterialRequerido(object):
         self.materila = material
         self.cantidad = cantidad
 
+    def imprimir(self):
+        print(f"Id Material Requerido:{self.id}")
+        self.materila.imprimir()
+        print(f"Cantidad:{self.cantidad} ")
+
 
 class Cuadrilla(object):
     def __init__(self, idcuadrilla, trabajadores):
         self.idcuadrilla = idcuadrilla
         self.trabajadores = trabajadores
+        
+    def imprimir(self):
+        print(f"Id Cuadrilla:{self.idcuadrilla}")
+        print("Trabajadores Asignados")
+        for id_trab, trab_elemento in self.trabajadores.items():
+            trab_elemento.imprimir()
 
 
 # Se  crea la clase Direccion
@@ -389,6 +430,11 @@ def ver_reporte():
         print("No encontrado")
     return reporte
 
+def ver_reporte_admin():
+    reporte = buscar_reporte()
+    if reporte is not None:
+        imprimirReporte_admin(reporte)
+    return reporte
 
 def ver_reportes():
     for id, reporte in reportes.items():
@@ -471,22 +517,26 @@ def editar_prioridad_reporte(reporte):
 def imprimirReporte(reporte):
     print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}, prioridad:{reporte.prioridad}")
 
+def imprimirReporte_admin(reporte):
+    print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}, prioridad:{reporte.prioridad}")
+    imprimir_orden_trabajo(reporte.orden_trabajo)
 
+    
 def login():
     user_name = input("Introduzca su usuario:")
     password = getpass.getpass('Introduzca su password:')
     if (user_name == "Admin" and password == "Admin"):
         user = Usuario(1, user_name, 1)
-        mostrarMenuAdmin()
+        mostrarMenuAdmin(user_name)
     elif (user_name == "Inspector" and password == "Inspector"):
         user = Usuario(1, user_name, 2)
-        mostrarMenuAdmin()
+        mostrarMenuAdmin(user_name)
     else:
         print("Lo sentimos, usuario incorrecto intente de nuevo")
         login()
 
 
-def mostrarMenuAdmin():
+def mostrarMenuAdmin(usuario_login):
     menuAdmin = {'1': ver_reportes, '2': ver_danios, }
     answer = 's'
     print("=" * 80)
@@ -502,7 +552,10 @@ def mostrarMenuAdmin():
         if option not in ['1', '2']:
             print("Opcion invalida")
         else:
-            menuAdmin[option]()
+            if usuario_login == "Admin":
+                ver_reporte_admin()
+            else:
+                menuAdmin[option]()
         answer = input("Desea registrar otro reporte? S/N: ").lower()
         while answer not in ['s', 'n']:
             answer = input("Desea registrar otro reporte? S/N: ").lower()
@@ -638,6 +691,13 @@ def crea_revision():
     revision = Revision("programado",materiales_temp, equipos_temp,user)
     return revision
     
+def imprimir_orden_trabajo(reporte_orden):
+    if reporte_orden is not None:
+        print("=" * 80)
+        print("Detalle Orden de Trabajo")
+        reporte_orden.imprimir()
+        print("=" * 80)
+ 
 # Se utilizan un diccionarios para guardar inormacion en estructura NoSQL
 
 try:
