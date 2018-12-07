@@ -159,6 +159,22 @@ class Administrador(Usuario):
         Usuario.__init__(self, pId, pNombre, "Administrador")
 
 
+class Evaluacion(object):
+
+    def __init__(self, procede):
+        self.id = uuid.uuid4().int
+        self.procede = procede
+
+class Desperfecto(object):
+
+    def __init__(self, reporte_dano, descripcion, monto, evaluacion):
+        self.id = uuid.uuid4().int
+        self.reporte_dano = reporte_dano
+        self.descripcion = descripcion
+        self.monto = monto
+        self.evaluacion = evaluacion 
+
+
 def registrar_bache():
     print("Favor de ingresar los datos necesarios para el registro:\n")
     tipo = validaopcion("Tipo de Bache [hoyo/zanja/depresion/irregularidad]: ",
@@ -268,11 +284,10 @@ def seguimiento_reporte():
 
 def buscar_dano():
     id_dano = validanulo("Introduzca el ID del reporte de daño: ")
+    id_dano = int(id_dano)
     if id_dano in reportes_danos.keys():
         return reportes_danos[id_dano]
     else:
-        print("ID no encontrado")
-        buscar_dano()
         return None
 
 
@@ -280,6 +295,8 @@ def ver_danio():
     reporte = buscar_dano()
     if reporte is not None:
         imprimirDano(reporte)
+    else:
+        print("No encontrado")
     return reporte
 
 
@@ -287,17 +304,80 @@ def imprimirDano(reporte):
     print(f"Reporte:{reporte.id} , fecha: {reporte.fecha}, estatus:{reporte.estatus}")
 
 
-def ver_danios():
-    print("Pediente")
+def editar_estatus_dano(reporte):
+    while True:
+        option = input("""
+            Mover estatus a:
+            1) En revisión
+            2) Rechazado
+            3) En tramite de pago
+            4) Resuelto 
+            5) Cancelar
+             """)
+        if option not in ['1', '2', '3', '4', '5']:
+            print("Opción invalida")
+            continue
+        if option == '1':
+            reporte.estatus = 'En revisión'
+        if option == '2':
+            reporte.estatus = 'Rechazado'
+        if option == '3':
+            reporte.estatus = 'En tramite de pago'
+        if option == '4':
+            reporte.estatus = 'Resuelto'
+        if option == '5':
+            break
 
+
+
+def editar_dano():
+    reporte = ver_danio()
+    while True:
+        option = input("""
+            1) Hacer Evaluacion
+            2) Cambiar estatus
+            3) Regresar
+            Favor de elequir una opción del menu: """)
+        if option not in ['1', '2', '3']:
+            print("Opción invalida")
+            continue
+        if option == '1':
+            monto = validanulo("Monto estimado de la reparación: ")
+            descripcion = validanulo("Descripcion:")
+            procede = validanulo("Procede:")
+            evaluacion = Evaluacion(procede)
+            desperfecto = Desperfecto(reporte, descripcion, monto, evaluacion)
+        if option == '2':
+            editar_estatus_dano(reporte)
+        if option == '3':
+            break
+    commit() 
+
+
+
+def ver_danios():
+    for id, reporte in reportes_danos.items():
+        imprimirDano(reporte)
+    while True:
+        option = input("""
+            1) Editar un reporte de daño
+            2) Regresar
+
+            Favor de elegir una opción del menu: """)
+        if option not in ['1', '2']:
+            print("Opción invalida")
+            continue
+        if option == '1':
+            editar_dano()
+        if option == '2':
+            break
 
 def buscar_reporte():
     id_reporte = validanulo("Introduzca el ID del reporte: ")
+    id_reporte = int(id_reporte)
     if id_reporte in reportes.keys():
         return reportes[id_reporte]
     else:
-        print("ID no encontrado")
-        buscar_reporte()
         return None
 
 
@@ -305,6 +385,8 @@ def ver_reporte():
     reporte = buscar_reporte()
     if reporte is not None:
         imprimirReporte(reporte)
+    else:
+        print("No encontrado")
     return reporte
 
 
@@ -346,7 +428,7 @@ def editar_reporte():
             crear_orden_trabajo(reporte.id)
         if option == '4':
             break
-
+    commit() 
 
 def editar_estatus_reporte(reporte):
     while True:
